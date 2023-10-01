@@ -1,4 +1,4 @@
-# Loki
+# Logging
 
 # TODO
 ## LATER
