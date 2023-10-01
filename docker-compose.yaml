@@ -1,0 +1,114 @@
+﻿version: '3.9'
+services:
+  loki:
+    image: grafana/loki:2.8.4
+    command:
+      - -config.file=/etc/loki/config.yml
+    configs:
+      - source: loki_config
+        target: /etc/loki/config.yml
+    networks:
+      - infrastructure
+    ports:
+      - target: 3100
+        published: 3100
+        mode: host
+        protocol: tcp
+    volumes:
+      - loki:/loki
+    environment:
+      JAEGER_SERVICE_NAME: loki
+      JAEGER_AGENT_HOST: tempo
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role == manager"
+      rollback_config:
+        parallelism: 0
+        failure_action: continue
+        order: stop-first
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: stop-first
+      labels:
+        prometheus.job: loki
+        prometheus.port: 3100
+        prometheus.path: /metrics
+    logging:
+      driver: loki
+      options:
+        loki-url: http://192.168.50.19:3100/loki/api/v1/push
+        loki-retries: 5
+        loki-batch-size: 20
+        loki-tenant-id: 1
+        loki-external-labels: "job=loki"
+  promtail:
+    image: grafana/promtail:2.8.4
+    volumes:
+      - /var/log:/var/log
+    command:
+      - -config.file=/etc/promtail/config.yml
+      - -config.expand-env=true
+    networks:
+      - infrastructure
+    configs:
+      - source: promtail_config
+        target: /etc/promtail/config.yml
+    environment:
+      JAEGER_SERVICE_NAME: promtail
+      JAEGER_AGENT_HOST: tempo
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - "node.labels.platform == linux"
+      rollback_config:
+        parallelism: 0
+        failure_action: continue
+        order: stop-first
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: stop-first
+      labels:
+        prometheus.job: promtail
+        prometheus.port: 9080
+        prometheus.path: /metrics
+    logging:
+      driver: loki
+      options:
+        loki-url: http://192.168.50.19:3100/loki/api/v1/push
+        loki-retries: 5
+        loki-batch-size: 20
+        loki-tenant-id: 1
+        loki-external-labels: "job=promtail"
+configs:
+  loki_config:
+    file: config/loki.yml
+    name: loki_config
+  promtail_config:
+    file: config/promtail.yml
+    name: promtail_config
+
+volumes:
+  loki:
+    name: loki
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.50.19,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
+      device: ":/share/docker/loki"
+
+networks:
+  infrastructure:
+    name: infrastructure
+    external: true

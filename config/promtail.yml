@@ -1,0 +1,33 @@
+﻿server:
+  http_listen_port: 9080
+  http_server_read_timeout: 600s
+  http_server_write_timeout: 600s
+  grpc_listen_port: 9081
+  grpc_server_max_recv_msg_size: 100000000
+  grpc_server_max_send_msg_size: 150000000
+  log_format: json
+  log_level: info
+
+limits_config:
+  readline_rate_enabled: true
+  readline_rate: 999999
+  readline_burst: 999999
+  readline_rate_drop: false
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
+  
+tracing:
+  enabled: true
