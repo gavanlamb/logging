@@ -17,7 +17,7 @@ server:
   grpc_server_max_recv_msg_size: 100000000
   grpc_server_max_send_msg_size: 150000000
   log_format: json
-  log_level: debug
+  log_level: info
 
 schema_config:
   configs:
