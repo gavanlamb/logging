@@ -41,12 +41,7 @@ services:
         prometheus.port: 3100
         prometheus.path: /metrics
     logging:
-      driver: loki
       options:
-        loki-url: http://192.168.50.19:3100/loki/api/v1/push
-        loki-retries: 5
-        loki-batch-size: 20
-        loki-tenant-id: 1
         loki-external-labels: "job=loki"
   promtail:
     image: grafana/promtail:2.8.4
@@ -85,12 +80,7 @@ services:
         prometheus.port: 9080
         prometheus.path: /metrics
     logging:
-      driver: loki
       options:
-        loki-url: http://192.168.50.19:3100/loki/api/v1/push
-        loki-retries: 5
-        loki-batch-size: 20
-        loki-tenant-id: 1
         loki-external-labels: "job=promtail"
 configs:
   loki_config:
