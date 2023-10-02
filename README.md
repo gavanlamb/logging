@@ -1,5 +1,40 @@
 # Logging
 
+# Config
+## Update default logging driver
+* Linux 
+    `/etc/docker/daemon.json`
+    ```json
+    {
+        ...
+        "debug": true,
+        "log-driver": "loki",
+        "log-opts": {
+            "loki-url": "http://192.168.1.19:3100/loki/api/v1/push",
+            "loki-batch-size": "100",
+            "loki-retries": 5
+        }
+    }
+    ```
+  
+* Windows Server
+    `C:\ProgramData\docker\config\daemon.json`
+    ```powershell
+    $contentToAdd = @"
+    {
+        ...
+        "debug": true,
+        "log-driver": "loki",
+        "log-opts": {
+            "loki-url": "http://192.168.1.19:3100/loki/api/v1/push",
+            "loki-batch-size": "100",
+            "loki-retries": 5
+        }
+    }
+    "@
+
+    Set-Content -Path .
+
 # TODO
 ## LATER
 ### Ship trace id with logs for all services above
