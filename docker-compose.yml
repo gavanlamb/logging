@@ -93,10 +93,6 @@ configs:
 volumes:
   loki:
     name: loki
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.50.19,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/share/docker/loki"
 
 networks:
   infrastructure:
