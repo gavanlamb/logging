@@ -35,9 +35,13 @@ storage_config:
     cache_location: /loki/tsdb-cache
     shared_store: s3
   aws:
-    s3: http://loki:q7XMDpds9CJvjfWY@minio.:9000/loki
+    endpoint: minio.:9000
+    bucketnames: loki
+    insecure: true
     s3forcepathstyle: true
     region: darlinghurst
+    access_key_id: ${MINIO_USERNAME}
+    secret_access_key: ${MINIO_PASSWORD}
 
 common:
   path_prefix: /loki

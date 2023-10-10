@@ -3,6 +3,7 @@ services:
   loki:
     image: grafana/loki:2.8.4
     command:
+      - -config.expand-env=true
       - -config.file=/etc/loki/config.yml
     configs:
       - source: loki_config
@@ -22,6 +23,8 @@ services:
       JAEGER_AGENT_PORT: 6831
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
+      MINIO_USERNAME: ${MINIO_LOKI_USERNAME}
+      MINIO_PASSWORD: ${MINIO_LOKI_PASSWORD}
     deploy:
       replicas: 1
       placement:
