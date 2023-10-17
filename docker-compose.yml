@@ -9,7 +9,7 @@ services:
       - source: loki_config
         target: /etc/loki/config.yml
     networks:
-      - infrastructure
+      - services
     ports:
       - target: 3100
         published: 3100
@@ -55,7 +55,7 @@ services:
       - -config.file=/etc/promtail/config.yml
       - -config.expand-env=true
     networks:
-      - infrastructure
+      - services
     configs:
       - source: promtail_config
         target: /etc/promtail/config.yml
@@ -103,6 +103,6 @@ volumes:
       device: ":/share/docker/loki"
 
 networks:
-  infrastructure:
-    name: infrastructure
+  services:
+    name: services
     external: true
