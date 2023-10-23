@@ -3,7 +3,7 @@
 # Config
 ## Update default logging driver
 1. Install loki plugin: ` docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`
-2. Update Docker daemin config
+2. Update Docker daemin config on all nodes   
     `/etc/docker/daemon.json`
     ```json
     {
