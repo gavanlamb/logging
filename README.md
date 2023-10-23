@@ -2,7 +2,8 @@
 
 # Config
 ## Update default logging driver
-* Linux 
+1. Install loki plugin: ` docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`
+2. Update Docker daemin config
     `/etc/docker/daemon.json`
     ```json
     {
@@ -16,24 +17,6 @@
         }
     }
     ```
-  
-* Windows Server
-    `C:\ProgramData\docker\config\daemon.json`
-    ```powershell
-    $contentToAdd = @"
-    {
-        ...
-        "debug": true,
-        "log-driver": "loki",
-        "log-opts": {
-            "loki-url": "http://192.168.1.19:3100/loki/api/v1/push",
-            "loki-batch-size": "100",
-            "loki-retries": "5"
-        }
-    }
-    "@
-
-    Set-Content -Path .
 
 # TODO
 ## LATER
