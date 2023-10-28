@@ -23,8 +23,8 @@ services:
       JAEGER_AGENT_PORT: 6831
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
-      MINIO_USERNAME: ${MINIO_LOKI_USERNAME}
-      MINIO_PASSWORD: ${MINIO_LOKI_PASSWORD}
+      MINIO_USERNAME: ${MINIO_USER_SERVICE_ACCOUNT_ACCESSKEY}
+      MINIO_PASSWORD: ${MINIO_USER_SERVICE_ACCOUNT_SECRETKEY}
     deploy:
       replicas: 1
       placement:
@@ -86,20 +86,59 @@ services:
     logging:
       options:
         loki-external-labels: "job=promtail"
+  create-bucket:
+    image: ubuntu:22.04
+    entrypoint: >
+      bash -c "cp /etc/minio/create-bucket.sh /etc/create-bucket.sh 
+      && chmod u+x /etc/create-bucket.sh
+      && cd /etc/
+      && ./create-bucket.sh"
+    configs:
+      - source: loki_create_bucket
+        target: /etc/minio/create-bucket.sh
+    networks:
+      - services
+    environment:
+      ADMIN_USERNAME: ${MINIO_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${MINIO_ADMIN_PASSWORD}
+      DEPLOYMENT_NAME: gavanlamb
+      DEPLOYMENT_URL: http://minio:9000
+      DEPLOYMENT_REGION: darlinghurst
+      NEW_BUCKET_NAME: loki
+      NEW_GROUP_NAME: loki
+      NEW_POLICY_PREFIX: loki
+      NEW_USER_NAME: loki
+      NEW_USER_PASSWORD: ${MINIO_USER_PASSWORD}
+      NEW_USER_SERVICE_ACCOUNT_ACCESSKEY: ${MINIO_USER_SERVICE_ACCOUNT_ACCESSKEY}
+      NEW_USER_SERVICE_ACCOUNT_SECRETKEY: ${MINIO_USER_SERVICE_ACCOUNT_SECRETKEY}
+    deploy:
+      mode: replicated
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          - "node.platform.os==linux"
+    logging:
+      options:
+        loki-external-labels: "job=loki-create-bucket"
+
 configs:
+  loki_create_bucket:
+    file: scripts/create-bucket.sh
+    name: create_loki_bucket
   loki_config:
     file: config/loki.yml
     name: loki_config
   promtail_config:
     file: config/promtail.yml
     name: promtail_config
-
+  
 volumes:
   loki:
     name: loki
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.50.19,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
+      o: "nfsvers=4,addr=192.168.50.31,rw,noatime,rsize=8192,wsize=8192,tcp"
       device: ":/share/docker/loki"
 
 networks:
