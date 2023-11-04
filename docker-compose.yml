@@ -45,9 +45,8 @@ services:
         prometheus.port: 3100
         prometheus.path: /metrics
     logging:
-      driver: local
-      #options:
-        #loki-external-labels: "job=loki"
+      options:
+        loki-external-labels: "job=loki"
   promtail:
     image: grafana/promtail:2.8.4
     volumes:
@@ -139,7 +138,7 @@ volumes:
     name: loki
     driver_opts:
       type: "nfs"
-      o: "nfsvers=4,addr=192.168.50.31,rw,noatime,rsize=8192,wsize=8192,tcp"
+      o: "nfsvers=4,addr=192.168.50.32,rw,noatime,rsize=8192,wsize=8192,tcp"
       device: ":/share/docker/loki"
 
 networks:
