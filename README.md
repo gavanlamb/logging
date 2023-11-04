@@ -8,10 +8,9 @@
     ```json
     {
         ...
-        "debug": true,
         "log-driver": "loki",
         "log-opts": {
-            "loki-url": "http://192.168.50.31:3100/loki/api/v1/push",
+            "loki-url": "http://192.168.50.32:3100/loki/api/v1/push",
             "loki-batch-size": "100",
             "loki-retries": "5"
         }
