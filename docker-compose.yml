@@ -11,8 +11,8 @@ services:
     networks:
       - services
     ports:
-      - target: 3100
-        published: 3100
+      - target: 3200
+        published: 3200
         mode: host
         protocol: tcp
     volumes:
@@ -42,7 +42,7 @@ services:
         order: stop-first
       labels:
         prometheus.job: loki
-        prometheus.port: 3100
+        prometheus.port: 3200
         prometheus.path: /metrics
     logging:
       options:
