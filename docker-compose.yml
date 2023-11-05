@@ -81,7 +81,7 @@ services:
         order: stop-first
       labels:
         prometheus.job: promtail
-        prometheus.port: 9080
+        prometheus.port: 3300
         prometheus.path: /metrics
     logging:
       options:
