@@ -1,5 +1,5 @@
 ﻿server:
-  http_listen_port: 9080
+  http_listen_port: 3300
   http_server_read_timeout: 600s
   http_server_write_timeout: 600s
   grpc_listen_port: 9081
