@@ -15,8 +15,8 @@ services:
         published: 3200
         mode: host
         protocol: tcp
-    volumes:
-      - loki:/loki
+    #volumes:
+    #  - loki:/loki
     environment:
       JAEGER_SERVICE_NAME: loki
       JAEGER_AGENT_HOST: tempo
