@@ -45,8 +45,7 @@ services:
         prometheus.port: 3200
         prometheus.path: /metrics
     logging:
-      options:
-        loki-external-labels: "job=loki"
+      driver: local
   promtail:
     image: grafana/promtail:2.8.4
     volumes:
@@ -84,8 +83,7 @@ services:
         prometheus.port: 3300
         prometheus.path: /metrics
     logging:
-      options:
-        loki-external-labels: "job=promtail"
+      driver: local
   create-bucket:
     image: gavanlamb/minio-create-bucket:v1.0.0
     networks:
@@ -111,8 +109,7 @@ services:
         constraints:
           - "node.platform.os==linux"
     logging:
-      options:
-        loki-external-labels: "job=loki-create-bucket"
+      driver: local
 
 configs:
   loki_config:
